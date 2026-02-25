@@ -29,10 +29,21 @@ button:hover{ background:#1b5e20; }
 #gameArea{
     margin-top:30px;
 }
+ .questionBox{
+    width:300px;
+    height:300px;
+    background:white;
+    border-radius:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 25px auto;
+    box-shadow:0 6px 12px rgba(0,0,0,0.2);
+}
 
 #questionImage{
-    width:220px;
-    height:220px;
+    width:300px;
+    height:300px;
     object-fit:cover;
     border-radius:20px;
     box-shadow:0 6px 12px rgba(0,0,0,0.2);
@@ -82,7 +93,7 @@ button:hover{ background:#1b5e20; }
 <button onclick="startGame('hard')">Hard (15)</button>
 
 <div id="gameArea" class="hidden">
-    <div>
+    <div class="questionBox">
         <img id="questionImage">
     </div>
     <div class="options" id="optionsContainer"></div>
@@ -290,6 +301,7 @@ function checkAnswer(selectedWord){
 
 </body>
 </html>
+
 
 
 
