@@ -169,20 +169,54 @@ function loadQuestion(){
     const question = questions[currentIndex];
 
     const questionImage = document.getElementById("questionImage");
-    questionImage.src = question.image;
+    questionImage.src = question.image; // gambar soal tetap dari assets
     questionImage.dataset.word = question.word;
 
     const optionsContainer = document.getElementById("optionsContainer");
     optionsContainer.innerHTML="";
 
-    // Pilih bank sesuai level
-    let sourceBank = (totalQuestions === 15) ? hardData : mixedData;
+    // 🔥 Semua opsi diambil dari folder images
+    let sourceBank = [
+        { word:"MOUNTAIN", image:"images/MOUNTAIN.png" },
+        { word:"EARTH", image:"images/EARTH.png" },
+        { word:"STAR", image:"images/STAR.png" },
+        { word:"TREE", image:"images/TREE.png" },
+        { word:"SUN", image:"images/SUN.png" },
+        { word:"OCEAN", image:"images/OCEAN.png" },
+        { word:"ISLAND", image:"images/ISLAND.png" },
+        { word:"CLOUD", image:"images/CLOUD.png" },
+        { word:"RAIN", image:"images/RAIN.png" },
+        { word:"DESERT", image:"images/DESERT.png" },
+        { word:"WAVE", image:"images/WAVE.png" },
+        { word:"LAKE", image:"images/LAKE.png" },
+        { word:"CAVE", image:"images/CAVE.png" },
+        { word:"ROCK", image:"images/ROCK.png" },
+        { word:"SNOW", image:"images/SNOW.png" },
+        { word:"GLACIER", image:"images/GLACIER.png" },
+        { word:"ICEBERG", image:"images/ICEBERG.png" },
+        { word:"LANDSLIDE", image:"images/LANDSLIDE.png" },
+        { word:"LIGHTNING", image:"images/LIGHTNING.png" },
+        { word:"PENINSULA", image:"images/PENINSULA.png" },
+        { word:"CORAL REEF", image:"images/CORALREEF.png" },
+        { word:"POLLUTION", image:"images/POLLUTION.png" },
+        { word:"FOREST", image:"images/FOREST.png" },
+        { word:"VALLEY", image:"images/VALLEY.png" },
+        { word:"SOLAR PANEL", image:"images/SOLARPANEL.png" },
+        { word:"SWAMP", image:"images/SWAMP.png" },
+        { word:"COMPOST", image:"images/COMPOST.png" },
+        { word:"GREENHOUSE", image:"images/GREENHOUSE.png" },
+        { word:"FOG", image:"images/FOG.png" },
+        { word:"ECLIPSE", image:"images/ECLIPSE.png" }
+    ];
 
     let wrongOptions = shuffle(
         sourceBank.filter(item=>item.word!==question.word)
     ).slice(0, optionCount-1);
 
-    let allOptions = shuffle([question,...wrongOptions]);
+    // Pastikan jawaban benar juga dari folder images
+    let correctOption = sourceBank.find(item=>item.word===question.word);
+
+    let allOptions = shuffle([correctOption,...wrongOptions]);
 
     allOptions.forEach(item=>{
 
@@ -256,5 +290,6 @@ function checkAnswer(selectedWord){
 
 </body>
 </html>
+
 
 
