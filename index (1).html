@@ -1,315 +1,240 @@
 <!DOCTYPE html>
 <html>
 <head>
-<base target="_top">
 <meta charset="UTF-8">
-<title>Eco Literacy Matching Game</title>
+<title>Vocabulary Image Challenge</title>
 
 <style>
-body {
+body{
     font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #a8edea, #fed6e3);
-    text-align: center;
-    margin: 0;
+    background: linear-gradient(to right,#a8edea,#fed6e3);
+    text-align:center;
+    margin:0;
 }
 
-h1 { margin-top: 20px; }
+h1{ margin-top:20px; }
 
-.controls { margin: 15px; }
-
-button {
-    padding: 8px 15px;
-    margin: 5px;
-    border-radius: 8px;
-    border: none;
-    background: #2e7d32;
-    color: white;
-    cursor: pointer;
+button{
+    padding:8px 15px;
+    margin:5px;
+    border-radius:8px;
+    border:none;
+    background:#2e7d32;
+    color:white;
+    cursor:pointer;
 }
 
-button:hover { background: #1b5e20; }
+button:hover{ background:#1b5e20; }
 
-.container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    justify-content: center;
-    max-width: 900px;
-    margin: 0 auto;
+#gameArea{
+    margin-top:30px;
 }
 
-.column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#questionImage{
+    width:220px;
+    height:220px;
+    object-fit:cover;
+    border-radius:20px;
+    box-shadow:0 6px 12px rgba(0,0,0,0.2);
+    margin-bottom:25px;
 }
 
-.card {
-    width: 140px;              /* choose size */
-    aspect-ratio: 1 / 1;       /* makes card square */
-
-    background: white;
-    padding: 10px;
-    margin: 8px;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    transition: 0.3s;
-
-    display: flex;             /* center image inside */
-    justify-content: center;
-    align-items: center;
+.options{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
 }
 
-.card:hover { transform: scale(1.03); }
-
-.card img {
-    width: 140px;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 8px;
+.option{
+    width:150px;
+    height:150px;
+    border-radius:15px;
+    background:white;
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-.selected { background: #ffe082; }
-.correct { background: #81c784; pointer-events: none; }
-
-.score {
-    font-size: 20px;
-    margin: 15px;
+.option img{
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:12px;
 }
+
+.option.correct{ background:#81c784; }
+.option.wrong{ background:#ef5350; }
+
+.hidden{ display:none; }
+
 </style>
 </head>
 
 <body>
 
-<h1>🌎 Flashcard Matching Game 🌎</h1>
-<h2> ⭐ Oleh Rakha Dwi & Tegar Adi ⭐</h2>
+<h1>🌎 Vocabulary Image Challenge 🌎</h1>
 
-<div class="controls">
-    <button onclick="startLevel('easy')">Easy (5)</button>
-    <button onclick="startLevel('medium')">Medium (10)</button>
-    <button onclick="startLevel('hard')">Hard (15)</button>
-    <button onclick="resetGame()">Reset</button>
-</div>
+<button onclick="startGame('easy')">Easy (5)</button>
+<button onclick="startGame('medium')">Medium (10)</button>
+<button onclick="startGame('hard')">Hard (15)</button>
 
-<div class="score">Score: <span id="score">0</span></div>
+<div id="gameArea" class="hidden">
+    <div>
+        <img id="questionImage">
+    </div>
 
-<div class="container">
-    <div class="column" id="images"></div>
-    <div class="column" id="descriptions"></div>
+    <div class="options" id="optionsContainer"></div>
 </div>
 
 <script>
 
 const fullData = [
-{word:"MOUNTAIN", desc:"A natural pyramid rising high into the sky."},
-{word:"STAR", desc:"A shining object in the sky that looks small."},
-{word:"OCEAN", desc:"A giant body of salt water covering Earth."},
-{word:"EARTH", desc:"The planet full of life."},
-{word:"TREE", desc:"One of the main producers of oxygen."},
-{word:"ECLIPSE", desc:"When the moon blocks sunlight."},
-{word:"ISLAND", desc:"Land surrounded by water."},
-{word:"SPACE", desc:"Home of planets and stars."},
-{word:"MELT", desc:"Ice turning into water."},
-{word:"BOIL", desc:"Water heated until bubbling."},
-{word:"CLIFF", desc:"A tall and steep rock wall."},
-{word:"SNOW", desc:"Ice crystals falling from sky."},
-{word:"WATERFALL", desc:"Water flowing from high place."},
-{word:"CAVE", desc:"Dark underground place."},
-{word:"ROCK", desc:"Hard natural object."},
-{word:"LAKE", desc:"Large water surrounded by land."},
-{word:"CLOUD", desc:"White object floating in sky."},
-{word:"SUN", desc:"Bright object shining every morning."},
-{word:"STORM", desc:"Strong wind and rain together."},
-{word:"RAIN", desc:"Water falling from clouds."},
-{word:"DESERT", desc:"Very hot and dry place."},
-{word:"WAVE", desc:"Moving ocean water."},
-{word:"POND", desc:"Small body of water."},
-{word:"FLOOD", desc:"Too much water covering land."},
-{word:"ROOT", desc:"Plant part under soil."},
-{word:"STEM", desc:"Main body of plant."},
-{word:"LEAF", desc:"Plant part that makes food."},
-{word:"BRANCH", desc:"Arm of a tree."},
-{word:"RECYCLE", desc:"Using materials again."},
-{word:"GLACIER", desc:"Huge moving ice on land."},
-{word:"ICEBERG", desc:"Floating ice in ocean."},
-{word:"FOG", desc:"Thick mist blocking view."},
-{word:"SEED", desc:"Beginning of plant."},
-{word:"LANDSLIDE", desc:"Soil falling from high land."},
-{word:"LIGHTNING", desc:"Bright flash in storm."},
-{word:"CORAL REEF", desc:"Colorful sea life area."},
-{word:"POLLUTION", desc:"Dirty air or water."},
-{word:"FOREST", desc:"Area with many trees."},
-{word:"VALLEY", desc:"Low land between hills."},
-{word:"PENINSULA", desc:"Land jutting into sea."},
-{word:"SOLAR PANEL", desc:"Tool capturing sun energy."},
-{word:"SWAMP", desc:"Wet muddy land."},
-{word:"COMPOST", desc:"Natural waste into soil."},
-{word:"GREENHOUSE", desc:"Glass building for plants."}
+{word:"MOUNTAIN"},
+{word:"STAR"},
+{word:"OCEAN"},
+{word:"EARTH"},
+{word:"TREE"},
+{word:"ECLIPSE"},
+{word:"ISLAND"},
+{word:"SPACE"},
+{word:"CLIFF"},
+{word:"SNOW"},
+{word:"WATERFALL"},
+{word:"CAVE"},
+{word:"ROCK"},
+{word:"LAKE"},
+{word:"CLOUD"},
+{word:"SUN"},
+{word:"STORM"},
+{word:"RAIN"},
+{word:"DESERT"},
+{word:"WAVE"}
 ];
 
-let matchedPairs = 0;
-let totalPairs = 0;
-let score = 0;
-let selectedImage = null;
-let selectedDesc = null;
+let questions = [];
+let currentIndex = 0;
+let totalQuestions = 5;
+let optionCount = 3;
+let locked = false;
 
-/* ⭐ BANK GLOBAL GAMBAR YANG SUDAH DIGUNAKAN */
-let usedWordsGlobal = new Set();
-
-function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
+function shuffle(array){
+    return array.sort(()=>Math.random()-0.5);
 }
 
-function resetGame(fullReset = false) {
+function startGame(level){
 
-    document.getElementById("images").innerHTML = "";
-    document.getElementById("descriptions").innerHTML = "";
-    document.getElementById("score").textContent = 0;
-    score = 0;
-
-    /* ⭐ jika reset total, kosongkan bank global */
-    if(fullReset){
-        usedWordsGlobal.clear();
+    if(level==="easy"){
+        totalQuestions=5;
+        optionCount=3;
     }
-}
-
-function startLevel(level) {
-
-    resetGame();
-
-    let amount = 5;
-    if(level === "medium") amount = 10;
-    if(level === "hard") amount = 15;
-
-    /* ⭐ ambil data yang belum pernah muncul di mode mana pun */
-    let available = fullData.filter(item => !usedWordsGlobal.has(item.word));
-
-    /* ⭐ jika gambar tersisa kurang dari kebutuhan → reset bank global */
-    if(available.length < amount){
-        usedWordsGlobal.clear();
-        available = [...fullData];
+    if(level==="medium"){
+        totalQuestions=10;
+        optionCount=4;
+    }
+    if(level==="hard"){
+        totalQuestions=15;
+        optionCount=5;
     }
 
-    const levelData = shuffle(available).slice(0, amount);
+    questions = shuffle([...fullData]).slice(0,totalQuestions);
+    currentIndex = 0;
+    document.getElementById("gameArea").classList.remove("hidden");
 
-    /* ⭐ tandai sebagai sudah dipakai global */
-    levelData.forEach(item => usedWordsGlobal.add(item.word));
-
-    createGame(levelData);
+    loadQuestion();
 }
 
-function createGame(data) {
-    
-    totalPairs = data.length;
-    matchedPairs = 0;
-    
-    const imageContainer = document.getElementById("images");
-    const descContainer = document.getElementById("descriptions");
+function loadQuestion(){
 
-    shuffle([...data]).forEach(item => {
+    locked=false;
+    const question = questions[currentIndex];
 
-        const card = document.createElement("div");
-        card.className = "card";
+    const questionImage = document.getElementById("questionImage");
+    questionImage.src = "images/" + question.word + ".png";
 
-        const img = document.createElement("img");
-        img.src = "images/" + item.word + ".png";
+    questionImage.dataset.word = question.word;
 
-        card.appendChild(img);
-        card.onclick = () => selectImage(card, item.word);
+    const optionsContainer = document.getElementById("optionsContainer");
+    optionsContainer.innerHTML="";
 
-        imageContainer.appendChild(card);
+    let wrongOptions = shuffle(
+        fullData.filter(item=>item.word!==question.word)
+    ).slice(0, optionCount-1);
+
+    let allOptions = shuffle([question,...wrongOptions]);
+
+    allOptions.forEach(item=>{
+
+        const div = document.createElement("div");
+        div.className="option";
+        div.dataset.word=item.word;
+
+        div.innerHTML = `<img src="images/${item.word}.png">`;
+
+        div.onclick = ()=>selectAnswer(div);
+
+        div.draggable=true;
+        div.ondragstart = (e)=>{
+            e.dataTransfer.setData("word",item.word);
+        };
+
+        optionsContainer.appendChild(div);
     });
 
-    shuffle([...data]).forEach(item => {
-
-        const card = document.createElement("div");
-        card.className = "card";
-        card.textContent = item.desc;
-
-        card.onclick = () => selectDesc(card, item.word);
-
-        descContainer.appendChild(card);
-    });
+    questionImage.ondragover = (e)=>e.preventDefault();
+    questionImage.ondrop = (e)=>{
+        if(locked) return;
+        const draggedWord = e.dataTransfer.getData("word");
+        checkAnswer(draggedWord);
+    };
 }
 
-function selectImage(card, word) {
-    if (selectedImage) selectedImage.classList.remove("selected");
-    selectedImage = card;
-    selectedImage.dataset.word = word;
-    selectedImage.classList.add("selected");
-    checkMatch();
+function selectAnswer(div){
+    if(locked) return;
+    checkAnswer(div.dataset.word);
 }
 
-function selectDesc(card, word) {
-    if (selectedDesc) selectedDesc.classList.remove("selected");
-    selectedDesc = card;
-    selectedDesc.dataset.word = word;
-    selectedDesc.classList.add("selected");
-    checkMatch();
-}
+function checkAnswer(selectedWord){
 
-function checkMatch() {
-    if (selectedImage && selectedDesc) {
-        if (selectedImage.dataset.word === selectedDesc.dataset.word) {
-            selectedImage.classList.add("correct");
-            selectedDesc.classList.add("correct");
-            score += 10;
-matchedPairs++;
+    const correctWord = questions[currentIndex].word;
+    const options = document.querySelectorAll(".option");
 
-document.getElementById("score").textContent = score;
+    if(selectedWord===correctWord){
 
-/* cek apakah game selesai */
-if(matchedPairs === totalPairs){
-    setTimeout(showFinalScore, 400);
-}
-        }
-        selectedImage.classList.remove("selected");
-        selectedDesc.classList.remove("selected");
-        selectedImage = null;
-        selectedDesc = null;
-    }
-}
+        locked=true;
 
-function showFinalScore(){
+        options.forEach(opt=>{
+            if(opt.dataset.word===correctWord){
+                opt.classList.add("correct");
+            }
+        });
 
-    let message = "🎉 Hebat! Kamu menyelesaikan level ini!\n\n";
-    message += "Skor akhir kamu: " + score + "\n\n";
+        setTimeout(()=>{
+            currentIndex++;
+            if(currentIndex<totalQuestions){
+                loadQuestion();
+            }else{
+                alert("🎉 Level Complete!");
+                document.getElementById("gameArea").classList.add("hidden");
+            }
+        },2000);
 
-    if(score >= totalPairs*10){
-        message += "🌟 Perfect! Semua benar!";
-    }else if(score >= totalPairs*7){
-        message += "👍 Bagus sekali!";
     }else{
-        message += "💪 Lumayan, coba lagi untuk skor lebih tinggi!";
-    }
 
-    if(confirm(message + "\n\nMain lagi?")){
-        resetGame(true);
+        options.forEach(opt=>{
+            if(opt.dataset.word===selectedWord){
+                opt.classList.add("wrong");
+                setTimeout(()=>opt.classList.remove("wrong"),800);
+            }
+        });
+
     }
 }
 
 </script>
 
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
