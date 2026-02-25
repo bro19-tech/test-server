@@ -89,7 +89,43 @@ button:hover{ background:#1b5e20; }
 
     <div class="options" id="optionsContainer"></div>
 </div>
+// 🔹 Bank campuran untuk Easy & Medium
+const mixedData = [
+{ word:"MOUNTAIN", image:"assets/mixed/MOUNTAIN1.png" },
+{ word:"EARTH", image:"assets/mixed/EARTH1.png" },
+{ word:"STAR", image:"assets/mixed/STAR1.png" },
+{ word:"TREE", image:"assets/mixed/TREE1.png" },
+{ word:"SUN", image:"assets/mixed/SUN1.png" },
+{ word:"OCEAN", image:"assets/mixed/OCEAN1.png" },
+{ word:"ISLAND", image:"assets/mixed/ISLAND1.png" },
+{ word:"CLOUD", image:"assets/mixed/CLOUD1.png" },
+{ word:"RAIN", image:"assets/mixed/RAIN1.png" },
+{ word:"DESERT", image:"assets/mixed/DESERT1.png" },
+{ word:"WAVE", image:"assets/mixed/WAVE1.png" },
+{ word:"LAKE", image:"assets/mixed/LAKE1.png" },
+{ word:"CAVE", image:"assets/mixed/CAVE1.png" },
+{ word:"ROCK", image:"assets/mixed/ROCK1.png" },
+{ word:"SNOW", image:"assets/mixed/SNOW1.png" }
+];
 
+// 🔹 Bank khusus HARD
+const hardData = [
+{ word:"GLACIER", image:"assets/hard/GLACIER1.png" },
+{ word:"ICEBERG", image:"assets/hard/ICEBERG1.png" },
+{ word:"LANDSLIDE", image:"assets/hard/LANDSLIDE1.png" },
+{ word:"LIGHTNING", image:"assets/hard/LIGHTNING1.png" },
+{ word:"PENINSULA", image:"assets/hard/PENINSULA1.png" },
+{ word:"CORAL REEF", image:"assets/hard/CORAL REEF1.png" },
+{ word:"POLLUTION", image:"assets/hard/POLLUTION1.png" },
+{ word:"FOREST", image:"assets/hard/FOREST1.png" },
+{ word:"VALLEY", image:"assets/hard/VALLEY1.png" },
+{ word:"SOLAR PANEL", image:"assets/hard/SOLAR PANEL1.png" },
+{ word:"SWAMP", image:"assets/hard/SWAMP1.png" },
+{ word:"COMPOST", image:"assets/hard/COMPOST1.png" },
+{ word:"GREENHOUSE", image:"assets/hard/GREENHOUSE1.png" },
+{ word:"FOG", image:"assets/hard/FOG1.png" },
+{ word:"ECLIPSE", image:"assets/hard/ECLIPSE1.png" }
+];
 <script>
 
 const fullData = [
@@ -130,17 +166,21 @@ function startGame(level){
     if(level==="easy"){
         totalQuestions=5;
         optionCount=3;
+        questions = shuffle([...mixedData]).slice(0,totalQuestions);
     }
+
     if(level==="medium"){
         totalQuestions=10;
         optionCount=4;
+        questions = shuffle([...mixedData]).slice(0,totalQuestions);
     }
+
     if(level==="hard"){
         totalQuestions=15;
         optionCount=5;
+        questions = shuffle([...hardData]).slice(0,totalQuestions);
     }
 
-    questions = shuffle([...fullData]).slice(0,totalQuestions);
     currentIndex = 0;
     document.getElementById("gameArea").classList.remove("hidden");
 
@@ -238,3 +278,4 @@ function checkAnswer(selectedWord){
 
 </body>
 </html>
+
