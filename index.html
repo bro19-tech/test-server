@@ -70,7 +70,6 @@ button:hover{ background:#1b5e20; }
 .option.wrong{ background:#ef5350; }
 
 .hidden{ display:none; }
-
 </style>
 </head>
 
@@ -86,12 +85,12 @@ button:hover{ background:#1b5e20; }
     <div>
         <img id="questionImage">
     </div>
-
     <div class="options" id="optionsContainer"></div>
+</div>
 
 <script>
-</div>
-// 🔹 Bank campuran untuk Easy & Medium
+
+// 🔹 Bank campuran (Easy & Medium)
 const mixedData = [
 { word:"MOUNTAIN", image:"assets/mixed/MOUNTAIN1.png" },
 { word:"EARTH", image:"assets/mixed/EARTH1.png" },
@@ -128,28 +127,6 @@ const hardData = [
 { word:"FOG", image:"assets/hard/FOG1.png" },
 { word:"ECLIPSE", image:"assets/hard/ECLIPSE1.png" }
 ];
-const fullData = [
-{word:"MOUNTAIN"},
-{word:"STAR"},
-{word:"OCEAN"},
-{word:"EARTH"},
-{word:"TREE"},
-{word:"ECLIPSE"},
-{word:"ISLAND"},
-{word:"SPACE"},
-{word:"CLIFF"},
-{word:"SNOW"},
-{word:"WATERFALL"},
-{word:"CAVE"},
-{word:"ROCK"},
-{word:"LAKE"},
-{word:"CLOUD"},
-{word:"SUN"},
-{word:"STORM"},
-{word:"RAIN"},
-{word:"DESERT"},
-{word:"WAVE"}
-];
 
 let questions = [];
 let currentIndex = 0;
@@ -183,7 +160,6 @@ function startGame(level){
 
     currentIndex = 0;
     document.getElementById("gameArea").classList.remove("hidden");
-
     loadQuestion();
 }
 
@@ -194,16 +170,16 @@ function loadQuestion(){
 
     const questionImage = document.getElementById("questionImage");
     questionImage.src = question.image;
-
     questionImage.dataset.word = question.word;
 
     const optionsContainer = document.getElementById("optionsContainer");
     optionsContainer.innerHTML="";
 
+    // Pilih bank sesuai level
     let sourceBank = (totalQuestions === 15) ? hardData : mixedData;
 
-let wrongOptions = shuffle(
-    sourceBank.filter(item=>item.word!==question.word)
+    let wrongOptions = shuffle(
+        sourceBank.filter(item=>item.word!==question.word)
     ).slice(0, optionCount-1);
 
     let allOptions = shuffle([question,...wrongOptions]);
@@ -280,6 +256,3 @@ function checkAnswer(selectedWord){
 
 </body>
 </html>
-
-
-
