@@ -88,6 +88,8 @@ button:hover{ background:#1b5e20; }
     </div>
 
     <div class="options" id="optionsContainer"></div>
+
+<script>
 </div>
 // 🔹 Bank campuran untuk Easy & Medium
 const mixedData = [
@@ -115,19 +117,17 @@ const hardData = [
 { word:"LANDSLIDE", image:"assets/hard/LANDSLIDE1.png" },
 { word:"LIGHTNING", image:"assets/hard/LIGHTNING1.png" },
 { word:"PENINSULA", image:"assets/hard/PENINSULA1.png" },
-{ word:"CORAL REEF", image:"assets/hard/CORAL REEF1.png" },
+{ word:"CORAL REEF", image:"assets/hard/CORALREEF1.png" },
 { word:"POLLUTION", image:"assets/hard/POLLUTION1.png" },
 { word:"FOREST", image:"assets/hard/FOREST1.png" },
 { word:"VALLEY", image:"assets/hard/VALLEY1.png" },
-{ word:"SOLAR PANEL", image:"assets/hard/SOLAR PANEL1.png" },
+{ word:"SOLAR PANEL", image:"assets/hard/SOLARPANEL1.png" },
 { word:"SWAMP", image:"assets/hard/SWAMP1.png" },
 { word:"COMPOST", image:"assets/hard/COMPOST1.png" },
 { word:"GREENHOUSE", image:"assets/hard/GREENHOUSE1.png" },
 { word:"FOG", image:"assets/hard/FOG1.png" },
 { word:"ECLIPSE", image:"assets/hard/ECLIPSE1.png" }
 ];
-<script>
-
 const fullData = [
 {word:"MOUNTAIN"},
 {word:"STAR"},
@@ -193,15 +193,17 @@ function loadQuestion(){
     const question = questions[currentIndex];
 
     const questionImage = document.getElementById("questionImage");
-    questionImage.src = "images/" + question.word + ".png";
+    questionImage.src = question.image;
 
     questionImage.dataset.word = question.word;
 
     const optionsContainer = document.getElementById("optionsContainer");
     optionsContainer.innerHTML="";
 
-    let wrongOptions = shuffle(
-        fullData.filter(item=>item.word!==question.word)
+    let sourceBank = (totalQuestions === 15) ? hardData : mixedData;
+
+let wrongOptions = shuffle(
+    sourceBank.filter(item=>item.word!==question.word)
     ).slice(0, optionCount-1);
 
     let allOptions = shuffle([question,...wrongOptions]);
@@ -212,7 +214,7 @@ function loadQuestion(){
         div.className="option";
         div.dataset.word=item.word;
 
-        div.innerHTML = `<img src="images/${item.word}.png">`;
+        div.innerHTML = `<img src="${item.image}">`;
 
         div.onclick = ()=>selectAnswer(div);
 
@@ -278,5 +280,6 @@ function checkAnswer(selectedWord){
 
 </body>
 </html>
+
 
 
