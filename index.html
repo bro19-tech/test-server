@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vocabulary Image Challenge</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right,#a8edea,#fed6e3);
+    text-align:center;
+    margin:0;
+}
+
+h1{ margin-top:20px; }
+
+button{
+    padding:8px 15px;
+    margin:5px;
+    border-radius:8px;
+    border:none;
+    background:#2e7d32;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{ background:#1b5e20; }
+
+#gameArea{
+    margin-top:30px;
+}
+
+#questionImage{
+    width:220px;
+    height:220px;
+    object-fit:cover;
+    border-radius:20px;
+    box-shadow:0 6px 12px rgba(0,0,0,0.2);
+    margin-bottom:25px;
+}
+
+.options{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.option{
+    width:150px;
+    height:150px;
+    border-radius:15px;
+    background:white;
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.option img{
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+.option.correct{ background:#81c784; }
+.option.wrong{ background:#ef5350; }
+
+.hidden{ display:none; }
+
+</style>
+</head>
+
+<body>
+
+<h1>🌎 Vocabulary Image Challenge 🌎</h1>
+
+<button onclick="startGame('easy')">Easy (5)</button>
+<button onclick="startGame('medium')">Medium (10)</button>
+<button onclick="startGame('hard')">Hard (15)</button>
+
+<div id="gameArea" class="hidden">
+    <div>
+        <img id="questionImage">
+    </div>
+
+    <div class="options" id="optionsContainer"></div>
+</div>
+
+<script>
+
+const fullData = [
+{word:"MOUNTAIN"},
+{word:"STAR"},
+{word:"OCEAN"},
+{word:"EARTH"},
+{word:"TREE"},
+{word:"ECLIPSE"},
+{word:"ISLAND"},
+{word:"SPACE"},
+{word:"CLIFF"},
+{word:"SNOW"},
+{word:"WATERFALL"},
+{word:"CAVE"},
+{word:"ROCK"},
+{word:"LAKE"},
+{word:"CLOUD"},
+{word:"SUN"},
+{word:"STORM"},
+{word:"RAIN"},
+{word:"DESERT"},
+{word:"WAVE"}
+];
+
+let questions = [];
+let currentIndex = 0;
+let totalQuestions = 5;
+let optionCount = 3;
+let locked = false;
+
+function shuffle(array){
+    return array.sort(()=>Math.random()-0.5);
+}
+
+function startGame(level){
+
+    if(level==="easy"){
+        totalQuestions=5;
+        optionCount=3;
+    }
+    if(level==="medium"){
+        totalQuestions=10;
+        optionCount=4;
+    }
+    if(level==="hard"){
+        totalQuestions=15;
+        optionCount=5;
+    }
+
+    questions = shuffle([...fullData]).slice(0,totalQuestions);
+    currentIndex = 0;
+    document.getElementById("gameArea").classList.remove("hidden");
+
+    loadQuestion();
+}
+
+function loadQuestion(){
+
+    locked=false;
+    const question = questions[currentIndex];
+
+    const questionImage = document.getElementById("questionImage");
+    questionImage.src = "images/" + question.word + ".png";
+
+    questionImage.dataset.word = question.word;
+
+    const optionsContainer = document.getElementById("optionsContainer");
+    optionsContainer.innerHTML="";
+
+    let wrongOptions = shuffle(
+        fullData.filter(item=>item.word!==question.word)
+    ).slice(0, optionCount-1);
+
+    let allOptions = shuffle([question,...wrongOptions]);
+
+    allOptions.forEach(item=>{
+
+        const div = document.createElement("div");
+        div.className="option";
+        div.dataset.word=item.word;
+
+        div.innerHTML = `<img src="images/${item.word}.png">`;
+
+        div.onclick = ()=>selectAnswer(div);
+
+        div.draggable=true;
+        div.ondragstart = (e)=>{
+            e.dataTransfer.setData("word",item.word);
+        };
+
+        optionsContainer.appendChild(div);
+    });
+
+    questionImage.ondragover = (e)=>e.preventDefault();
+    questionImage.ondrop = (e)=>{
+        if(locked) return;
+        const draggedWord = e.dataTransfer.getData("word");
+        checkAnswer(draggedWord);
+    };
+}
+
+function selectAnswer(div){
+    if(locked) return;
+    checkAnswer(div.dataset.word);
+}
+
+function checkAnswer(selectedWord){
+
+    const correctWord = questions[currentIndex].word;
+    const options = document.querySelectorAll(".option");
+
+    if(selectedWord===correctWord){
+
+        locked=true;
+
+        options.forEach(opt=>{
+            if(opt.dataset.word===correctWord){
+                opt.classList.add("correct");
+            }
+        });
+
+        setTimeout(()=>{
+            currentIndex++;
+            if(currentIndex<totalQuestions){
+                loadQuestion();
+            }else{
+                alert("🎉 Level Complete!");
+                document.getElementById("gameArea").classList.add("hidden");
+            }
+        },2000);
+
+    }else{
+
+        options.forEach(opt=>{
+            if(opt.dataset.word===selectedWord){
+                opt.classList.add("wrong");
+                setTimeout(()=>opt.classList.remove("wrong"),800);
+            }
+        });
+
+    }
+}
+
+</script>
+
+</body>
+</html>
